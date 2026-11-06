@@ -12,7 +12,7 @@
 
 <p align="center">
   <a href="../../releases/latest"><b>⬇️ Télécharger la dernière version</b></a> ·
-  <a href="installer/guide.html">Guide d'installation</a> ·
+  <a href="../../releases/latest">Guide d'installation</a> ·
   macOS 14+ · Apple Silicon et Intel · Licence MIT
 </p>
 
@@ -46,7 +46,7 @@ Téléchargez l'un des fichiers de la [dernière version](../../releases/latest)
 
 Ensuite, autorisez Copiste dans **Réglages Système › Confidentialité et sécurité › Contrôle de l'appareil** (« Accessibilité » sur les versions plus anciennes de macOS). Sans cette autorisation, Copiste ne peut pas coller à votre place.
 
-Le [guide d'installation complet](installer/guide.html) détaille chaque étape, ainsi que le dépannage et la désinstallation. Il est aussi fourni dans le .dmg et le .zip.
+Le [guide d'installation complet](../../releases/latest) (fichier `Guide d'installation.html`) détaille chaque étape, ainsi que le dépannage et la désinstallation. Il est aussi fourni dans le .dmg et le .zip.
 
 ## Utilisation
 
