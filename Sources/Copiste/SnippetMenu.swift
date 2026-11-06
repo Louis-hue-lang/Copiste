@@ -1,6 +1,6 @@
 import AppKit
 
-/// Construit le menu (historique + dossiers de snippets) et colle l'élément choisi.
+/// Construit le menu (historique + dossiers de pré-copies) et colle l'élément choisi.
 final class SnippetMenu: NSObject {
     private let store: SnippetStore
     private let history: ClipboardHistory
@@ -41,7 +41,7 @@ final class SnippetMenu: NSObject {
             menu.addItem(.separator())
         }
 
-        menu.addItem(.sectionHeader(title: "Snippets"))
+        menu.addItem(.sectionHeader(title: "Pré-copies"))
         if store.folders.isEmpty {
             menu.addItem(disabled("Aucun dossier"))
         }
@@ -52,14 +52,16 @@ final class SnippetMenu: NSObject {
             if folder.snippets.isEmpty { sub.addItem(disabled("(vide)")) }
             for snippet in folder.snippets {
                 let title = snippet.title.isEmpty ? Self.label(snippet.content) : snippet.title
-                sub.addItem(pasteItem(title: title, text: snippet.content))
+                let item = pasteItem(title: title, text: snippet.content)
+                item.representedObject = snippet
+                sub.addItem(item)
             }
             item.submenu = sub
             menu.addItem(item)
         }
 
         menu.addItem(.separator())
-        let settings = NSMenuItem(title: "Gérer les snippets…", action: #selector(settingsClicked), keyEquivalent: ",")
+        let settings = NSMenuItem(title: "Gérer les pré-copies…", action: #selector(settingsClicked), keyEquivalent: ",")
         settings.target = self
         menu.addItem(settings)
 
@@ -71,8 +73,11 @@ final class SnippetMenu: NSObject {
     // MARK: - Actions
 
     @objc private func pick(_ sender: NSMenuItem) {
-        guard let text = sender.representedObject as? String else { return }
-        Paster.paste(text, history: history)
+        if let snippet = sender.representedObject as? Snippet {
+            Paster.paste(snippet.content, rtf: snippet.rtf, history: history)
+        } else if let text = sender.representedObject as? String {
+            Paster.paste(text, history: history)
+        }
     }
 
     @objc private func settingsClicked() {

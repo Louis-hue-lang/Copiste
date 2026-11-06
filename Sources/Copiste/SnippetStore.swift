@@ -3,7 +3,10 @@ import Foundation
 struct Snippet: Identifiable, Codable, Hashable {
     var id = UUID()
     var title: String
+    /// Texte brut (aperçu, recherche, collage sans mise en forme).
     var content: String
+    /// Mise en forme (gras, italique, souligné) en RTF ; nil pour du texte simple.
+    var rtf: Data? = nil
 }
 
 struct SnippetFolder: Identifiable, Codable, Hashable {
@@ -12,7 +15,7 @@ struct SnippetFolder: Identifiable, Codable, Hashable {
     var snippets: [Snippet] = []
 }
 
-/// Snippets rangés en dossiers, sauvegardés en JSON dans
+/// Pré-copies (« snippets » dans le code) rangées en dossiers, sauvegardés en JSON dans
 /// ~/Library/Application Support/Copiste/snippets.json
 final class SnippetStore: ObservableObject {
     @Published var folders: [SnippetFolder] = [] {

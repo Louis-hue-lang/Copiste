@@ -6,10 +6,9 @@ let log = Logger(subsystem: "fr.louisclauzier.copiste", category: "app")
 enum Paster {
     /// Place le texte dans le presse-papier puis simule ⌘V dans l'app au premier plan.
     /// Nécessite l'autorisation Accessibilité.
-    static func paste(_ text: String, history: ClipboardHistory) {
-        let pb = NSPasteboard.general
-        pb.clearContents()
-        pb.setString(text, forType: .string)
+    /// Avec `rtf`, la mise en forme (gras, italique, souligné) est collée aussi.
+    static func paste(_ text: String, rtf: Data? = nil, history: ClipboardHistory) {
+        RichText.write(text: text, rtf: rtf)
         history.ignoreCurrent()
 
         let trusted = AXIsProcessTrusted()

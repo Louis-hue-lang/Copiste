@@ -18,12 +18,13 @@
 
 ---
 
-<p align="center"><img src="docs/reglages.png" width="820" alt="Fenêtre de gestion des snippets"></p>
+<p align="center"><img src="docs/reglages.png" width="820" alt="Fenêtre de gestion des pré-copies"></p>
 
 ## Fonctionnalités
 
 - 🕘 **Historique du presse-papier** : les 30 derniers textes copiés, collés d'un clic ou avec les touches <kbd>1</kbd> à <kbd>9</kbd>.
-- 📁 **Snippets rangés en dossiers** : signatures, réponses types, adresses… créés une fois, réutilisés partout.
+- 📁 **Pré-copies rangées en dossiers** : signatures, réponses types, adresses… créées une fois, réutilisées partout.
+- ✍️ **Mise en forme** : gras, italique et souligné, conservés au collage (Mail, Pages, Word, Notes, navigateurs…).
 - 🖱️ **Menu sous la souris** : <kbd>⌥</kbd> + clic droit dans n'importe quelle application, ou <kbd>⌥</kbd><kbd>⌘</kbd><kbd>V</kbd> au clavier. Le texte choisi est collé directement.
 - 🔎 **Recherche, glisser-déposer, déplacement entre dossiers** dans une interface entièrement en français.
 - 🔒 **Respect de la vie privée** : rien ne quitte votre Mac. L'historique reste en mémoire et les mots de passe des gestionnaires (1Password, Bitwarden…) sont ignorés.
@@ -55,9 +56,10 @@ Le [guide d'installation complet](../../releases/latest) (fichier `Guide d'insta
 | Ouvrir le menu sous la souris | <kbd>⌥ option</kbd> + clic droit |
 | Ouvrir le menu au clavier | <kbd>⌥</kbd> <kbd>⌘</kbd> <kbd>V</kbd> |
 | Coller l'un des 9 derniers éléments (menu ouvert) | <kbd>1</kbd> … <kbd>9</kbd> |
-| Gérer les snippets | Icône de la barre des menus › Gérer les snippets… |
+| Gérer les pré-copies | Icône de la barre des menus › Gérer les pré-copies… |
+| Gras, italique, souligné (éditeur) | <kbd>⌘</kbd><kbd>B</kbd>, <kbd>⌘</kbd><kbd>I</kbd>, <kbd>⌘</kbd><kbd>U</kbd> |
 
-Les snippets sont enregistrés dans `~/Library/Application Support/Copiste/snippets.json`.
+Les pré-copies sont enregistrées dans `~/Library/Application Support/Copiste/snippets.json`.
 
 ## Compiler depuis les sources
 
@@ -76,7 +78,8 @@ Seuls les outils en ligne de commande d'Apple sont nécessaires (`xcode-select -
 |---|---|
 | `Sources/Copiste/AppDelegate.swift` | Démarrage, icône de la barre des menus, raccourcis |
 | `Sources/Copiste/ClipboardHistory.swift` | Surveillance du presse-papier |
-| `Sources/Copiste/SnippetStore.swift` | Dossiers et snippets, enregistrés en JSON |
+| `Sources/Copiste/SnippetStore.swift` | Dossiers et pré-copies, enregistrés en JSON |
+| `Sources/Copiste/RichText.swift` | Éditeur gras / italique / souligné, export RTF et HTML |
 | `Sources/Copiste/SnippetMenu.swift` | Construction du menu et collage |
 | `Sources/Copiste/RightClickTap.swift` | Interception du <kbd>⌥</kbd> + clic droit |
 | `Sources/Copiste/HotKey.swift` | Raccourci global <kbd>⌥</kbd><kbd>⌘</kbd><kbd>V</kbd> |
@@ -90,7 +93,7 @@ Seuls les outils en ligne de commande d'Apple sont nécessaires (`xcode-select -
 - Raccourcis personnalisables
 - Historique des images et des fichiers
 - Historique conservé entre deux lancements (en option)
-- Import et export des snippets
+- Import et export des pré-copies
 - Notarisation Apple
 
 ## Licence

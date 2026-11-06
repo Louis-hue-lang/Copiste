@@ -76,7 +76,7 @@ struct SettingsView: View {
         } message: { folder in
             Text(folder.snippets.isEmpty
                  ? "Le dossier est vide."
-                 : "Ses \(folder.snippets.count) snippet(s) seront supprimés définitivement.")
+                 : "Ses \(folder.snippets.count) pré-copie(s) seront supprimées définitivement.")
         }
     }
 
@@ -109,7 +109,7 @@ struct SettingsView: View {
     }
 }
 
-// MARK: - Dossier : liste des snippets + éditeur
+// MARK: - Dossier : liste des pré-copies + éditeur
 
 struct FolderDetail: View {
     @ObservedObject var store: SnippetStore
@@ -149,7 +149,7 @@ struct FolderDetail: View {
                     ))
                     .textFieldStyle(.plain)
                     .font(.title2.weight(.semibold))
-                    Text(folder.snippets.count <= 1 ? "\(folder.snippets.count) snippet" : "\(folder.snippets.count) snippets")
+                    Text(folder.snippets.count <= 1 ? "\(folder.snippets.count) pré-copie" : "\(folder.snippets.count) pré-copies")
                         .font(.callout)
                         .foregroundStyle(.secondary)
                 }
@@ -188,18 +188,18 @@ struct FolderDetail: View {
                     ContentUnavailableView(
                         search.isEmpty ? "Dossier vide" : "Aucun résultat",
                         systemImage: search.isEmpty ? "tray" : "magnifyingglass",
-                        description: Text(search.isEmpty ? "Ajoutez un snippet avec le bouton +." : "")
+                        description: Text(search.isEmpty ? "Ajoutez une pré-copie avec le bouton +." : "")
                     )
                 }
             }
 
             Divider()
             HStack {
-                Button(action: add) { Label("Nouveau snippet", systemImage: "plus") }
+                Button(action: add) { Label("Nouvelle pré-copie", systemImage: "plus") }
                 Spacer()
                 Button { if let id = snippetID { remove(id) } } label: { Image(systemName: "trash") }
                     .disabled(snippetID == nil)
-                    .help("Supprimer le snippet")
+                    .help("Supprimer la pré-copie")
             }
             .buttonStyle(.borderless)
             .padding(12)
@@ -215,8 +215,8 @@ struct FolderDetail: View {
             ))
             .id(sid)
         } else {
-            ContentUnavailableView("Aucun snippet sélectionné", systemImage: "text.cursor",
-                                   description: Text("Choisissez un snippet dans la liste ou créez-en un."))
+            ContentUnavailableView("Aucune pré-copie sélectionnée", systemImage: "text.cursor",
+                                   description: Text("Choisissez une pré-copie dans la liste ou créez-en une."))
         }
     }
 
@@ -224,7 +224,7 @@ struct FolderDetail: View {
 
     private func add() {
         var f = folder
-        let snippet = Snippet(title: "Nouveau snippet", content: "")
+        let snippet = Snippet(title: "Nouvelle pré-copie", content: "")
         f.snippets.append(snippet)
         store.updateFolder(f)
         search = ""
@@ -285,11 +285,12 @@ struct SnippetRow: View {
 
 struct SnippetEditor: View {
     @Binding var snippet: Snippet
+    @StateObject private var format = RichTextController()
     @State private var copied = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            TextField("Titre du snippet", text: $snippet.title)
+            TextField("Titre de la pré-copie", text: $snippet.title)
                 .textFieldStyle(.plain)
                 .font(.title3.weight(.semibold))
                 .padding(.horizontal, 22)
@@ -300,14 +301,28 @@ struct SnippetEditor: View {
                 .padding(.horizontal, 22)
                 .padding(.top, 4)
 
-            TextEditor(text: $snippet.content)
-                .font(.system(size: 14))
-                .lineSpacing(3)
-                .scrollContentBackground(.hidden)
-                .padding(12)
-                .background(RoundedRectangle(cornerRadius: 10).fill(Color(nsColor: .textBackgroundColor)))
-                .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Color(nsColor: .separatorColor)))
-                .padding(18)
+            VStack(spacing: 0) {
+                HStack(spacing: 2) {
+                    FormatButton(symbol: "bold", help: "Gras (⌘B)", active: format.bold, key: "b", action: format.toggleBold)
+                    FormatButton(symbol: "italic", help: "Italique (⌘I)", active: format.italic, key: "i", action: format.toggleItalic)
+                    FormatButton(symbol: "underline", help: "Souligné (⌘U)", active: format.underline, key: "u", action: format.toggleUnderline)
+                    Spacer()
+                }
+                .padding(6)
+                Divider()
+                RichTextEditor(
+                    initial: RichText.attributed(text: snippet.content, rtf: snippet.rtf),
+                    controller: format
+                ) { text in
+                    snippet.content = text.string
+                    snippet.rtf = RichText.rtf(from: text)
+                }
+                .padding(8)
+            }
+            .background(RoundedRectangle(cornerRadius: 10).fill(Color(nsColor: .textBackgroundColor)))
+            .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Color(nsColor: .separatorColor)))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .padding(18)
 
             HStack {
                 Text("\(snippet.content.count) caractères")
@@ -315,8 +330,7 @@ struct SnippetEditor: View {
                     .foregroundStyle(.secondary)
                 Spacer()
                 Button {
-                    NSPasteboard.general.clearContents()
-                    NSPasteboard.general.setString(snippet.content, forType: .string)
+                    RichText.write(text: snippet.content, rtf: snippet.rtf)
                     copied = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { copied = false }
                 } label: {
@@ -327,6 +341,28 @@ struct SnippetEditor: View {
             .padding(.horizontal, 22)
             .padding(.bottom, 18)
         }
+    }
+}
+
+struct FormatButton: View {
+    let symbol: String
+    let help: String
+    let active: Bool
+    let key: KeyEquivalent
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: symbol)
+                .font(.system(size: 13, weight: .semibold))
+                .frame(width: 28, height: 24)
+                .background(RoundedRectangle(cornerRadius: 6).fill(active ? AppInfo.accent.opacity(0.18) : .clear))
+                .foregroundStyle(active ? AppInfo.accent : .primary)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .keyboardShortcut(key, modifiers: .command)
+        .help(help)
     }
 }
 
