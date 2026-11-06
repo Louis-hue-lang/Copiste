@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copiste · Guide d'installation</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f6fc; --card: #ffffff; --text: #1f1d33; --muted: #646380; --line: #e4e2f3;
+    --accent: #5b52ee; --accent-soft: rgba(91, 82, 238, .09); --warn: #b26a00; --warn-soft: #fff4e0;
+    --kbd: #fafafa; --kbd-line: #cfcde0; --mock: #ecebf6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16151f; --card: #201f2c; --text: #ecebf5; --muted: #a3a1bb; --line: #33314a;
+      --accent: #8c84ff; --accent-soft: rgba(140, 132, 255, .14); --warn: #ffb547; --warn-soft: rgba(255, 181, 71, .12);
+      --kbd: #2c2b3b; --kbd-line: #4a4866; --mock: #2a2938;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif; }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 48px 20px 80px; }
+  header { display: flex; gap: 20px; align-items: center; margin-bottom: 28px; }
+  header img { width: 96px; height: 96px; flex: none; }
+  h1 { font-size: 34px; line-height: 1.15; margin: 0 0 6px; letter-spacing: -.01em; }
+  header p { margin: 0; color: var(--muted); font-size: 17px; }
+  nav { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 20px; margin-bottom: 32px; }
+  nav b { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  nav ol { margin: 6px 0 0; padding-left: 20px; columns: 2; column-gap: 32px; }
+  nav a { color: var(--accent); text-decoration: none; }
+  nav a:hover { text-decoration: underline; }
+  section { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 26px 28px; margin-bottom: 20px; }
+  h2 { font-size: 22px; margin: 0 0 14px; display: flex; align-items: center; gap: 12px; }
+  h2 .n { flex: none; width: 32px; height: 32px; border-radius: 16px; background: var(--accent); color: #fff; font-size: 16px; display: grid; place-items: center; }
+  h3 { font-size: 17px; margin: 22px 0 8px; }
+  p { margin: 0 0 12px; }
+  ol.steps { padding-left: 22px; margin: 0 0 12px; }
+  ol.steps li { margin-bottom: 8px; }
+  kbd { font: 600 13px -apple-system, sans-serif; background: var(--kbd); border: 1px solid var(--kbd-line); border-bottom-width: 2px; border-radius: 5px; padding: 1px 7px; white-space: nowrap; }
+  code { font: 14px ui-monospace, Menlo, monospace; background: var(--accent-soft); border-radius: 5px; padding: 1px 6px; }
+  pre { font: 13.5px/1.5 ui-monospace, Menlo, monospace; background: var(--mock); border-radius: 10px; padding: 12px 14px; overflow-x: auto; }
+  .path { font-weight: 600; }
+  .tip, .warn { border-radius: 12px; padding: 12px 16px; margin: 14px 0 4px; font-size: 15px; }
+  .tip { background: var(--accent-soft); }
+  .warn { background: var(--warn-soft); border-left: 4px solid var(--warn); }
+  .choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 8px 0 4px; }
+  .choice { border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+  .choice b { display: block; font-size: 16px; margin-bottom: 4px; }
+  .choice span { color: var(--muted); font-size: 14px; }
+  .mock-menu { display: inline-block; background: var(--card); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 30px rgba(20, 15, 80, .15); padding: 6px; min-width: 300px; font-size: 14px; margin: 6px 0 10px; }
+  .mock-menu .h { color: var(--muted); font-size: 12px; font-weight: 600; padding: 4px 10px 2px; }
+  .mock-menu .i { padding: 4px 10px; border-radius: 6px; display: flex; justify-content: space-between; gap: 20px; }
+  .mock-menu .i.sel { background: var(--accent); color: #fff; }
+  .mock-menu .i small { opacity: .6; }
+  .mock-menu hr { border: 0; border-top: 1px solid var(--line); margin: 5px 6px; }
+  .mock-toggle { display: flex; align-items: center; justify-content: space-between; background: var(--mock); border-radius: 10px; padding: 10px 14px; max-width: 420px; margin: 8px 0; }
+  .sw { width: 38px; height: 22px; border-radius: 11px; background: var(--accent); position: relative; }
+  .sw::after { content: ""; position: absolute; right: 2px; top: 2px; width: 18px; height: 18px; border-radius: 9px; background: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  td { padding: 9px 4px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td:last-child { text-align: right; white-space: nowrap; }
+  details { border-top: 1px solid var(--line); padding: 12px 0; }
+  details:last-of-type { border-bottom: 1px solid var(--line); }
+  summary { cursor: pointer; font-weight: 600; }
+  details p, details ol { margin-top: 10px; }
+  footer { text-align: center; color: var(--muted); font-size: 14px; margin-top: 30px; }
+  footer a { color: var(--accent); }
+  @media (max-width: 640px) {
+    .choices { grid-template-columns: 1fr; }
+    nav ol { columns: 1; }
+    header { flex-direction: column; align-items: flex-start; }
+    section { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <img src="data:image/png;base64,{{ICON}}" alt="">
+  <div>
+    <h1>Installer et utiliser Copiste</h1>
+    <p>Votre presse-papier, en mieux. Version {{VERSION}}, pour macOS 14 Sonoma ou plus récent, Apple Silicon et Intel.</p>
+  </div>
+</header>
+
+<nav>
+  <b>Sommaire</b>
+  <ol>
+    <li><a href="#installer">Installer Copiste</a></li>
+    <li><a href="#ouvrir">Premier lancement</a></li>
+    <li><a href="#autoriser">Autoriser Copiste</a></li>
+    <li><a href="#utiliser">Utiliser Copiste</a></li>
+    <li><a href="#snippets">Créer vos snippets</a></li>
+    <li><a href="#reglages">Réglages utiles</a></li>
+    <li><a href="#depannage">Dépannage</a></li>
+    <li><a href="#desinstaller">Désinstaller</a></li>
+  </ol>
+</nav>
+
+<section id="installer">
+  <h2><span class="n">1</span>Installer Copiste</h2>
+  <p>Copiste est proposé sous trois formats. Ils installent tous la même application ; choisissez celui qui vous convient.</p>
+  <div class="choices">
+    <div class="choice"><b>.pkg</b><span>Un assistant d'installation vous guide pas à pas. Le plus simple.</span></div>
+    <div class="choice"><b>.dmg</b><span>Une fenêtre s'ouvre : glissez Copiste sur le dossier Applications.</span></div>
+    <div class="choice"><b>.zip</b><span>Contient l'installeur .pkg et ce guide. Pratique pour l'envoyer par e-mail.</span></div>
+  </div>
+
+  <h3>Avec l'installeur .pkg (ou le .zip)</h3>
+  <ol class="steps">
+    <li>Si vous avez téléchargé le <b>.zip</b>, double-cliquez dessus pour le décompresser, puis ouvrez le dossier obtenu.</li>
+    <li>Double-cliquez sur <b>Copiste-{{VERSION}}.pkg</b>.</li>
+    <li>Si macOS indique qu'il ne peut pas vérifier le paquet, suivez l'<a href="#ouvrir">étape 2</a>, puis revenez ici.</li>
+    <li>Cliquez sur <b>Continuer</b>, acceptez la licence, puis cliquez sur <b>Installer</b>. Saisissez le mot de passe de votre Mac si on vous le demande.</li>
+    <li>À la fin, Copiste s'ouvre tout seul. Passez directement à l'<a href="#autoriser">étape 3</a>.</li>
+  </ol>
+
+  <h3>Avec l'image disque .dmg</h3>
+  <ol class="steps">
+    <li>Double-cliquez sur <b>Copiste-{{VERSION}}.dmg</b>. Une fenêtre s'ouvre.</li>
+    <li>Glissez l'icône <b>Copiste</b> sur le dossier <b>Applications</b>.</li>
+    <li>Éjectez l'image disque (clic droit sur « Copiste » dans le Finder › Éjecter).</li>
+    <li>Ouvrez Copiste depuis le dossier Applications (voir l'étape suivante).</li>
+  </ol>
+</section>
+
+<section id="ouvrir">
+  <h2><span class="n">2</span>Premier lancement : si macOS bloque l'ouverture</h2>
+  <p>Copiste est un logiciel libre distribué hors de l'App Store, sans la certification payante d'Apple. La première fois, macOS peut donc afficher :
+    <i>« Apple n'a pas pu confirmer que “Copiste” ne contenait pas de logiciel malveillant »</i>. C'est normal, et cela ne se produit qu'une seule fois.</p>
+  <ol class="steps">
+    <li>Cliquez sur <b>Terminé</b> (surtout pas sur « Placer dans la corbeille »).</li>
+    <li>Ouvrez <span class="path">Réglages Système › Confidentialité et sécurité</span>.</li>
+    <li>Faites défiler jusqu'à la section <b>Sécurité</b> : un message indique que « Copiste » a été bloqué. Cliquez sur <b>Ouvrir quand même</b>.</li>
+    <li>Confirmez avec <b>Ouvrir quand même</b>, puis saisissez votre mot de passe ou utilisez Touch ID.</li>
+  </ol>
+  <div class="tip">💡 La même procédure fonctionne pour l'installeur <b>.pkg</b> s'il est bloqué.</div>
+  <h3>Méthode alternative (Terminal)</h3>
+  <p>Si vous êtes à l'aise avec le Terminal, cette commande retire le marquage « téléchargé depuis Internet » :</p>
+  <pre>xattr -dr com.apple.quarantine /Applications/Copiste.app</pre>
+</section>
+
+<section id="autoriser">
+  <h2><span class="n">3</span>Autoriser Copiste à coller pour vous</h2>
+  <p>Pour coller automatiquement le texte choisi et répondre au <kbd>⌥ option</kbd> + clic droit, Copiste a besoin d'une autorisation de macOS. Elle ne se donne qu'une seule fois.</p>
+  <ol class="steps">
+    <li>Au premier lancement, macOS affiche une demande d'autorisation. Cliquez sur <b>Ouvrir les Réglages Système</b>.<br>
+      Sinon, allez dans <span class="path">Réglages Système › Confidentialité et sécurité › Contrôle de l'appareil</span>. Sur les versions plus anciennes de macOS, cette section s'appelle « Accessibilité ».</li>
+    <li>Activez l'interrupteur à côté de <b>Copiste</b> :
+      <div class="mock-toggle"><span>📋 Copiste.app</span><span class="sw"></span></div>
+    </li>
+    <li>Vérifiez : dans Copiste, l'onglet <b>Général</b> affiche ✅ <b>« Tout est prêt »</b>.</li>
+  </ol>
+  <div class="tip">🔒 Cette autorisation sert uniquement à simuler <kbd>⌘</kbd><kbd>V</kbd> et à détecter le <kbd>⌥</kbd> + clic droit. Copiste ne se connecte à aucun serveur : tout reste sur votre Mac.</div>
+</section>
+
+<section id="utiliser">
+  <h2><span class="n">4</span>Utiliser Copiste</h2>
+  <p>Copiste vit dans la <b>barre des menus</b> (icône 📋 en haut à droite) et n'apparaît pas dans le Dock. Il retient automatiquement ce que vous copiez.</p>
+  <ol class="steps">
+    <li>Copiez des textes comme d'habitude avec <kbd>⌘</kbd><kbd>C</kbd>.</li>
+    <li>Cliquez là où vous voulez coller, puis faites <kbd>⌥ option</kbd> + clic droit, ou <kbd>⌥</kbd><kbd>⌘</kbd><kbd>V</kbd>.</li>
+    <li>Choisissez un élément : il est collé immédiatement.</li>
+  </ol>
+  <div class="mock-menu">
+    <div class="h">Historique</div>
+    <div class="i sel"><span>Rendez-vous jeudi à 14 h ?</span><small>1</small></div>
+    <div class="i"><span>https://exemple.fr/devis-2026</span><small>2</small></div>
+    <div class="i"><span>12 rue des Lilas, 75011 Paris</span><small>3</small></div>
+    <hr>
+    <div class="h">Snippets</div>
+    <div class="i"><span>📁 Mails</span><small>›</small></div>
+    <div class="i"><span>📁 Réponses clients</span><small>›</small></div>
+    <hr>
+    <div class="i"><span>Gérer les snippets…</span><small>⌘,</small></div>
+  </div>
+  <table>
+    <tr><td>Ouvrir le menu sous la souris</td><td><kbd>⌥ option</kbd> + clic droit</td></tr>
+    <tr><td>Ouvrir le menu au clavier</td><td><kbd>⌥</kbd> <kbd>⌘</kbd> <kbd>V</kbd></td></tr>
+    <tr><td>Coller l'un des 9 derniers éléments (menu ouvert)</td><td><kbd>1</kbd> à <kbd>9</kbd></td></tr>
+    <tr><td>Fermer le menu sans rien coller</td><td><kbd>esc</kbd></td></tr>
+  </table>
+</section>
+
+<section id="snippets">
+  <h2><span class="n">5</span>Créer vos snippets</h2>
+  <p>Les snippets sont des textes que vous réutilisez souvent : signature, réponses types, adresse, IBAN, modèles de message… Rangez-les en dossiers et retrouvez-les dans le menu.</p>
+  <ol class="steps">
+    <li>Cliquez sur l'icône 📋 de la barre des menus › <b>Gérer les snippets…</b></li>
+    <li>En bas à gauche, cliquez sur <b>Nouveau dossier</b>, puis renommez-le en cliquant sur son nom en haut de la liste.</li>
+    <li>Cliquez sur <b>+ Nouveau snippet</b>, donnez-lui un titre (affiché dans le menu) et saisissez le texte à coller.</li>
+    <li>C'est tout : chaque modification est enregistrée automatiquement.</li>
+  </ol>
+  <div class="tip">💡 Glissez-déposez les dossiers et les snippets pour les réordonner. Un clic droit sur un snippet permet de le <b>déplacer vers un autre dossier</b>. Le champ <b>Rechercher</b> filtre par titre et par contenu.</div>
+</section>
+
+<section id="reglages">
+  <h2><span class="n">6</span>Réglages utiles</h2>
+  <p>Dans <b>Gérer les snippets…</b>, ouvrez la section <b>Général</b> :</p>
+  <ul>
+    <li><b>Lancer Copiste à l'ouverture de session</b> : Copiste démarre tout seul avec votre Mac. Recommandé.</li>
+    <li><b>Vider l'historique</b> : efface immédiatement les textes mémorisés.</li>
+  </ul>
+  <p>L'historique est gardé <b>en mémoire uniquement</b> : il disparaît quand vous quittez Copiste. Les mots de passe copiés depuis un gestionnaire (1Password, Bitwarden, Trousseau…) sont ignorés. Vos snippets sont enregistrés dans <code>~/Library/Application Support/Copiste/snippets.json</code>.</p>
+</section>
+
+<section id="depannage">
+  <h2><span class="n">7</span>Dépannage</h2>
+  <details open>
+    <summary>Le menu s'affiche mais rien n'est collé</summary>
+    <p>L'autorisation n'est pas active. Vérifiez l'onglet <b>Général</b> de Copiste. Si Copiste est coché dans les Réglages mais que l'onglet Général affiche toujours ⚠️ :</p>
+    <ol class="steps">
+      <li>Dans <span class="path">Confidentialité et sécurité › Contrôle de l'appareil</span> (ou Accessibilité), sélectionnez Copiste et cliquez sur <b>−</b> pour le retirer.</li>
+      <li>Cliquez sur <b>+</b> et ajoutez de nouveau <b>Applications › Copiste</b>.</li>
+      <li>Quittez Copiste (icône 📋 › Quitter Copiste), puis rouvrez-le.</li>
+    </ol>
+    <p>Cela arrive surtout après une mise à jour. Le texte choisi reste de toute façon dans le presse-papier : <kbd>⌘</kbd><kbd>V</kbd> fonctionne toujours.</p>
+  </details>
+  <details>
+    <summary>⌥ + clic droit ouvre le menu habituel de l'application</summary>
+    <p>Même cause : l'autorisation n'est pas active (voir ci-dessus). <kbd>⌥</kbd><kbd>⌘</kbd><kbd>V</kbd> fonctionne même sans autorisation, mais le collage automatique en a besoin.</p>
+  </details>
+  <details>
+    <summary>Je ne vois pas l'icône dans la barre des menus</summary>
+    <p>Sur un petit écran, elle peut être masquée par l'encoche ou par d'autres icônes. Fermez quelques icônes, ou utilisez <kbd>⌥</kbd><kbd>⌘</kbd><kbd>V</kbd> puis « Gérer les snippets… ». Vous pouvez aussi double-cliquer sur Copiste dans Applications : cela ouvre directement la fenêtre de réglages.</p>
+  </details>
+  <details>
+    <summary>Un raccourci entre en conflit avec une autre application</summary>
+    <p>Dans le Finder, <kbd>⌥</kbd><kbd>⌘</kbd><kbd>V</kbd> sert à « déplacer » un fichier copié, et Copiste prend la priorité. Utilisez plutôt <kbd>⌥</kbd> + clic droit dans ce cas. Les raccourcis personnalisables sont prévus dans une prochaine version.</p>
+  </details>
+</section>
+
+<section id="desinstaller">
+  <h2><span class="n">8</span>Désinstaller</h2>
+  <ol class="steps">
+    <li>Quittez Copiste : icône 📋 › <b>Quitter Copiste</b>.</li>
+    <li>Glissez <b>Applications › Copiste</b> dans la Corbeille.</li>
+    <li>Facultatif : supprimez vos snippets en effaçant le dossier <code>~/Library/Application Support/Copiste</code>, et retirez Copiste de la liste <b>Contrôle de l'appareil</b>.</li>
+  </ol>
+</section>
+
+<footer>
+  Copiste {{VERSION}} · logiciel libre sous licence MIT ·
+  <a href="{{REPO_URL}}">code source et mises à jour</a>
+</footer>
+
+</div>
+</body>
+</html>

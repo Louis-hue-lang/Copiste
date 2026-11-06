@@ -1,0 +1,4 @@
+#!/bin/bash
+# Ferme Copiste s'il tourne, pour pouvoir le remplacer proprement.
+pkill -x Copiste 2>/dev/null || true
+exit 0

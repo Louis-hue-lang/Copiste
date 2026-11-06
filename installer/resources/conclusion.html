@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 13px -apple-system, "SF Pro Text", sans-serif; line-height: 1.5; margin: 0 8px; }
+  h1 { font-size: 20px; margin: 4px 0 4px; }
+  .lead { color: #555; margin-bottom: 12px; }
+  ol { list-style: none; padding: 0; counter-reset: step; }
+  ol > li { counter-increment: step; position: relative; padding-left: 34px; margin: 0 0 12px; }
+  ol > li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 11px; background: #5B52EE; color: #fff; font-weight: 700; text-align: center; line-height: 22px; }
+  .path { font-weight: 600; }
+  kbd { font: 600 11px -apple-system, sans-serif; border: 1px solid #c8c8d0; border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; background: #fafafa; }
+  .tip { padding: 9px 12px; border-radius: 8px; background: rgba(91, 82, 238, .08); font-size: 12px; }
+  @media (prefers-color-scheme: dark) {
+    .lead { color: #bbb; }
+    kbd { background: #333; border-color: #555; }
+    .tip { background: rgba(140, 132, 255, .15); }
+  }
+</style>
+</head>
+<body>
+  <h1>Copiste est installé 🎉</h1>
+  <p class="lead">Encore une étape et c'est prêt.</p>
+
+  <ol>
+    <li>Copiste vient de s'ouvrir : son icône 📋 apparaît dans la <b>barre des menus</b>, en haut à droite de l'écran.</li>
+    <li><b>Autorisez Copiste</b> pour qu'il puisse coller à votre place. Dans la fenêtre que macOS affiche, ouvrez les Réglages, puis activez Copiste dans
+      <span class="path">Réglages Système › Confidentialité et sécurité › Contrôle de l'appareil</span> (« Accessibilité » sur les versions plus anciennes de macOS).</li>
+    <li><b>Essayez !</b> Copiez un texte, placez le curseur ailleurs, puis faites <kbd>⌥ option</kbd> + clic droit et choisissez le texte dans le menu.</li>
+  </ol>
+
+  <div class="tip">
+    💡 Créez vos dossiers de snippets avec <b>icône de la barre des menus › Gérer les snippets…</b>
+    Pensez aussi à activer <b>« Lancer Copiste à l'ouverture de session »</b> dans l'onglet Général.
+  </div>
+</body>
+</html>
