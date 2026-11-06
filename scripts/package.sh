@@ -5,7 +5,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 VERSION=$(/usr/libexec/PlistBuddy -c "Print CFBundleShortVersionString" Resources/Info.plist)
-REPO_URL=${REPO_URL:-https://github.com/louisclauzier/Copiste}
+REPO_URL=${REPO_URL:-https://github.com/Louis-hue-lang/Copiste}
 DIST=dist
 WORK=build/package
 GUIDE_NAME="Guide d'installation.html"

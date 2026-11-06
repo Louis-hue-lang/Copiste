@@ -3,7 +3,7 @@ import SwiftUI
 
 enum AppInfo {
     static let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "dev"
-    static let repo = URL(string: "https://github.com/louisclauzier/Copiste")!
+    static let repo = URL(string: "https://github.com/Louis-hue-lang/Copiste")!
     static let accent = Color(red: 0.36, green: 0.32, blue: 0.93)
 }
 
