@@ -393,6 +393,7 @@ struct GeneralPage: View {
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
     @State private var loginError: String?
     @State private var historyCleared = false
+    @AppStorage(NotchBridge.defaultsKey) private var showInNotch = true
     private let refresh = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -441,6 +442,19 @@ struct GeneralPage: View {
                     if let loginError {
                         Text(loginError).font(.caption).foregroundStyle(.red)
                     }
+                }
+
+                Card("AlyNotch", systemImage: "rectangle.topthird.inset.filled") {
+                    Toggle(isOn: $showInNotch) {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Afficher dans AlyNotch")
+                            Text("Quand AlyNotch est lancé, tes dernières copies et tes pré-copies apparaissent dans l'onglet Extensions du notch. Un clic les copie. Sans AlyNotch, rien ne change.")
+                                .font(.callout)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    .toggleStyle(.switch)
                 }
 
                 Card("Historique", systemImage: "clock.arrow.circlepath") {

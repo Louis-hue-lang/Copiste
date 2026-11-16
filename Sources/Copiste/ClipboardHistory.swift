@@ -7,6 +7,8 @@ final class ClipboardHistory {
     private var lastChange = NSPasteboard.general.changeCount
     private var timer: Timer?
     private let maxItems = 30
+    /// Appelé quand la liste change (utilisé par l'intégration AlyNotch).
+    var onChange: (() -> Void)?
 
     /// Marqueurs posés par les gestionnaires de mots de passe (convention nspasteboard.org).
     private let ignoredTypes: Set<String> = [
@@ -28,6 +30,7 @@ final class ClipboardHistory {
 
     func clear() {
         items.removeAll()
+        onChange?()
     }
 
     private func poll() {
@@ -42,5 +45,6 @@ final class ClipboardHistory {
         items.removeAll { $0 == text }
         items.insert(text, at: 0)
         if items.count > maxItems { items.removeLast(items.count - maxItems) }
+        onChange?()
     }
 }

@@ -27,6 +27,7 @@
 - ✍️ **Mise en forme** : gras, italique et souligné, conservés au collage (Mail, Pages, Word, Notes, navigateurs…).
 - 🖱️ **Menu sous la souris** : <kbd>⌥</kbd> + clic droit dans n'importe quelle application, ou <kbd>⌥</kbd><kbd>⌘</kbd><kbd>V</kbd> au clavier. Le texte choisi est collé directement.
 - 🔎 **Recherche, glisser-déposer, déplacement entre dossiers** dans une interface entièrement en français.
+- 🧩 **Extension AlyNotch** : si AlyNotch est lancé, vos dernières copies et vos pré-copies s'affichent dans l'onglet Extensions du notch, et un clic les copie. Facultatif, désactivable dans Réglages › Général.
 - 🔒 **Respect de la vie privée** : rien ne quitte votre Mac. L'historique reste en mémoire et les mots de passe des gestionnaires (1Password, Bitwarden…) sont ignorés.
 - 🪶 **Léger** : environ 1 Mo, aucune dépendance, une simple icône dans la barre des menus.
 
@@ -83,6 +84,8 @@ Seuls les outils en ligne de commande d'Apple sont nécessaires (`xcode-select -
 | `Sources/Copiste/SnippetMenu.swift` | Construction du menu et collage |
 | `Sources/Copiste/RightClickTap.swift` | Interception du <kbd>⌥</kbd> + clic droit |
 | `Sources/Copiste/HotKey.swift` | Raccourci global <kbd>⌥</kbd><kbd>⌘</kbd><kbd>V</kbd> |
+| `Sources/Copiste/NotchBridge.swift` | Panneau et événements de l'extension AlyNotch |
+| `Sources/Copiste/AlyNotchExtension.swift` | Client du protocole d'extensions AlyNotch |
 | `Sources/Copiste/Paster.swift` | Simulation de <kbd>⌘</kbd><kbd>V</kbd> |
 | `Sources/Copiste/SettingsView.swift` | Fenêtre de réglages (SwiftUI) |
 | `installer/` | Écrans de l'installeur, fond du .dmg et guide |

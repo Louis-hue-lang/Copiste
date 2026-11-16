@@ -8,6 +8,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private lazy var snippetMenu = SnippetMenu(store: store, history: history) { [weak self] in
         self?.openSettings()
     }
+    private lazy var notch = NotchBridge(store: store, history: history) { [weak self] in
+        self?.openSettings()
+    }
     private let rightClick = RightClickTap()
     private var statusItem: NSStatusItem!
     private var hotKey: HotKey?
@@ -34,6 +37,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
         _ = AXIsProcessTrustedWithOptions(options)
         startRightClickWhenAllowed()
+
+        // Intégration AlyNotch : facultative, coupée par le réglage « Afficher dans AlyNotch ».
+        notch.setEnabled(NotchBridge.isEnabled)
+        NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.notch.setEnabled(NotchBridge.isEnabled)
+        }
 
         if CommandLine.arguments.contains("--settings") { openSettings() }
     }
