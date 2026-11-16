@@ -1,7 +1,7 @@
 import AppKit
 import Combine
 
-/// Copiste dans AlyNotch (onglet « Extensions ») : derniers éléments copiés, pré-copies, actions rapides.
+/// Copiste dans AlyNotch (onglet « Extensions ») : pré-copies (colonne de gauche) et historique du presse-papier (colonne de droite).
 /// Facultatif : sans AlyNotch, le client réessaie en silence toutes les 5 s et rien ne change pour Copiste.
 final class NotchBridge {
     static let defaultsKey = "alynotchEnabled"
@@ -61,36 +61,50 @@ final class NotchBridge {
     private func refresh() {
         guard let notch else { return }
         typealias Item = AlyNotchExtension.Item
-        var items: [Item] = []
 
-        shownHistory = Array(history.items.prefix(3))
+        // Colonne de gauche : pré-copies.
+        var snippetItems: [Item] = []
+        let folders = store.folders.filter { !$0.snippets.isEmpty }
+        if folders.isEmpty {
+            snippetItems.append(.text(id: "snippets-empty", title: "Aucune pré-copie", symbol: "text.quote"))
+        }
+        // Un en-tête par dossier, puis ses pré-copies (4 au plus, le reste est signalé).
+        for folder in folders {
+            snippetItems.append(.text(id: "folder:\(folder.id.uuidString)",
+                                      title: folder.name.isEmpty ? "Sans nom" : folder.name, symbol: "folder.fill"))
+            for snippet in folder.snippets.prefix(4) {
+                snippetItems.append(.row(id: "snippet:\(snippet.id.uuidString)",
+                                         title: snippet.title.isEmpty ? SnippetMenu.label(snippet.content) : snippet.title,
+                                         symbol: snippet.rtf == nil ? "text.quote" : "textformat"))
+            }
+            if folder.snippets.count > 4 {
+                snippetItems.append(.text(id: "more:\(folder.id.uuidString)",
+                                          subtitle: "+ \(folder.snippets.count - 4) autres"))
+            }
+        }
+        snippetItems.append(.button(id: "manage", title: "Gérer", symbol: "folder", prominent: true))
+
+        // Colonne de droite : historique du presse-papier.
+        var historyItems: [Item] = []
+        shownHistory = Array(history.items.prefix(6))
         if shownHistory.isEmpty {
-            items.append(.text(id: "history-empty", title: "Rien de copié pour l'instant",
-                               subtitle: "Ce que tu copies apparaîtra ici.", symbol: "clock"))
+            historyItems.append(.text(id: "history-empty", title: "Rien de copié pour l'instant",
+                                      subtitle: "Ce que tu copies apparaîtra ici.", symbol: "clock"))
         }
         for (i, text) in shownHistory.enumerated() {
-            items.append(.row(id: "history:\(i)", title: SnippetMenu.label(text), subtitle: i == 0 ? "Dernière copie" : nil,
-                              symbol: "clock", detail: "Copier"))
+            historyItems.append(.row(id: "history:\(i)", title: SnippetMenu.label(text),
+                                     subtitle: i == 0 ? "Dernière copie" : nil, symbol: "clock"))
         }
-
-        items.append(.divider(id: "divider"))
-
-        let snippets = store.folders.flatMap { folder in folder.snippets.map { (folder, $0) } }
-        if snippets.isEmpty {
-            items.append(.text(id: "snippets-empty", title: "Aucune pré-copie", symbol: "text.quote"))
-        }
-        for (folder, snippet) in snippets.prefix(4) {
-            items.append(.row(id: "snippet:\(snippet.id.uuidString)",
-                              title: snippet.title.isEmpty ? SnippetMenu.label(snippet.content) : snippet.title,
-                              subtitle: folder.name.isEmpty ? nil : folder.name,
-                              symbol: snippet.rtf == nil ? "text.quote" : "textformat", detail: "Copier"))
-        }
-
-        items.append(.button(id: "manage", title: "Gérer les pré-copies", symbol: "folder", prominent: true))
         if !shownHistory.isEmpty {
-            items.append(.button(id: "clear-history", title: "Vider l'historique", symbol: "trash"))
+            historyItems.append(.button(id: "clear-history", title: "Vider", symbol: "trash"))
         }
-        notch.setView(title: "Copiste", items: items)
+
+        notch.setView(title: "Copiste", items: [
+            .columns(id: "main", [
+                .init(title: "Pré-copies", items: snippetItems),
+                .init(title: "Historique", items: historyItems),
+            ]),
+        ])
     }
 
     // MARK: - Événements

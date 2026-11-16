@@ -13,6 +13,14 @@ public final class AlyNotchExtension: @unchecked Sendable {
         public var symbol: String?
         public var prominent: Bool?
         public var detail: String?
+        public var columns: [Column]?
+
+        /// Une colonne d'un élément « columns ».
+        public struct Column: Encodable, Sendable {
+            public var title: String?
+            public var items: [Item]
+            public init(title: String? = nil, items: [Item]) { self.title = title; self.items = items }
+        }
 
         public static func text(id: String, title: String? = nil, subtitle: String? = nil, symbol: String? = nil) -> Item {
             Item(id: id, type: "text", title: title, subtitle: subtitle, symbol: symbol)
@@ -28,6 +36,10 @@ public final class AlyNotchExtension: @unchecked Sendable {
         }
         public static func divider(id: String = UUID().uuidString) -> Item {
             Item(id: id, type: "divider")
+        }
+        /// Colonnes côte à côte (2 ou 3). Les identifiants des éléments restent ceux des événements.
+        public static func columns(id: String, _ columns: [Column]) -> Item {
+            Item(id: id, type: "columns", columns: columns)
         }
     }
 
