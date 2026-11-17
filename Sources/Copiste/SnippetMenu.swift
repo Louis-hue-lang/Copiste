@@ -72,6 +72,23 @@ final class SnippetMenu: NSObject {
                 transform.submenu = sub
                 menu.addItem(transform)
             }
+            if let latest = history.recent.first ?? history.pinned.first {
+                let trimmed = latest.trimmingCharacters(in: .whitespacesAndNewlines)
+                let fields = FieldExtractor.fields(in: latest).filter { $0.value != trimmed }
+                if !fields.isEmpty {
+                    let only = NSMenuItem(title: "Coller seulement…", action: nil, keyEquivalent: "")
+                    only.image = NSImage(systemSymbolName: "text.viewfinder", accessibilityDescription: nil)
+                    let sub = NSMenu()
+                    for f in fields {
+                        let entry = NSMenuItem(title: "\(f.label) : \(Self.label(f.value))", action: #selector(transformPick(_:)), keyEquivalent: "")
+                        entry.target = self
+                        entry.representedObject = f.value
+                        sub.addItem(entry)
+                    }
+                    only.submenu = sub
+                    menu.addItem(only)
+                }
+            }
             menu.addItem(disabled("⇧ clic : épingler · ⌘ clic : supprimer"))
             menu.addItem(.separator())
         }

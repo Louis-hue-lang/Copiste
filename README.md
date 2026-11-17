@@ -27,6 +27,7 @@
 - ✍️ **Mise en forme** : gras, italique et souligné, conservés au collage (Mail, Pages, Word, Notes, navigateurs…).
 - 📌 **Épingles** : épinglez une copie pour qu'elle reste en tête, même après redémarrage (seuls les éléments épinglés sont enregistrés sur disque).
 - 🪄 **Transformations locales** : majuscules, une seule ligne, tri, lien sans suivi, couleur hex → RGB… appliquées à la dernière copie, sans IA.
+- 🎯 **Coller seulement un champ** : montant, date, e-mail, IBAN (contrôlé), téléphone ou lien repéré dans la dernière copie, collé seul (« Coller seulement… »).
 - 🖱️ **Menu sous la souris** : <kbd>⌥</kbd> + clic droit dans n'importe quelle application, ou <kbd>⌥</kbd><kbd>⌘</kbd><kbd>V</kbd> au clavier. Le texte choisi est collé directement.
 - 🔎 **Recherche, glisser-déposer, déplacement entre dossiers** dans une interface entièrement en français.
 - 🧩 **Extension AlyNotch** : si AlyNotch (0.8.0 ou plus) est lancé, Copiste apparaît dans le notch en deux colonnes : vos pré-copies rangées par dossier à gauche, l'historique du presse-papier à droite ; un clic copie. Facultatif, désactivable dans Réglages › Général.
@@ -62,6 +63,7 @@ Le [guide d'installation complet](../../releases/latest) (fichier `Guide d'insta
 | Épingler / désépingler un élément de l'historique | <kbd>⇧</kbd> + clic dans le menu |
 | Supprimer un élément de l'historique | <kbd>⌘</kbd> + clic dans le menu |
 | Transformer la dernière copie | Menu › Transformer la dernière copie |
+| Coller un seul champ de la dernière copie | Menu › Coller seulement… |
 | Gérer les pré-copies | Icône de la barre des menus › Gérer les pré-copies… |
 | Gras, italique, souligné (éditeur) | <kbd>⌘</kbd><kbd>B</kbd>, <kbd>⌘</kbd><kbd>I</kbd>, <kbd>⌘</kbd><kbd>U</kbd> |
 
@@ -84,6 +86,7 @@ Seuls les outils en ligne de commande d'Apple sont nécessaires (`xcode-select -
 |---|---|
 | `Sources/Copiste/AppDelegate.swift` | Démarrage, icône de la barre des menus, raccourcis |
 | `Sources/Copiste/ClipboardHistory.swift` | Surveillance du presse-papier, épingles |
+| `Sources/Copiste/FieldExtractor.swift` | Détection des champs (montant, date, IBAN…) |
 | `Sources/Copiste/ClipKind.swift` | Type d'un texte copié (icône) et transformations |
 | `Sources/Copiste/SnippetStore.swift` | Dossiers et pré-copies, enregistrés en JSON |
 | `Sources/Copiste/RichText.swift` | Éditeur gras / italique / souligné, export RTF et HTML |
@@ -101,7 +104,6 @@ Seuls les outils en ligne de commande d'Apple sont nécessaires (`xcode-select -
 
 - Recherche dans l'historique
 - Cycle ⌘ maintenu + V avec relâchement pour coller (option)
-- Collage d'un seul champ détecté (montant, date, e-mail…)
 - Raccourcis personnalisables
 - Historique des images et des fichiers
 - Historique conservé entre deux lancements (en option)
