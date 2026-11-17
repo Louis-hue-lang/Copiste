@@ -391,6 +391,7 @@ struct GeneralPage: View {
     let history: ClipboardHistory
     @State private var trusted = AXIsProcessTrusted()
     @State private var inputAllowed = HoldCycle.hasInputPermission
+    @State private var cycleRunning = HoldCycle.isRunning
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
     @State private var loginError: String?
     @State private var historyCleared = false
@@ -459,11 +460,21 @@ struct GeneralPage: View {
                         }
                     }
                     .toggleStyle(.switch)
-                    if holdCycle && !inputAllowed {
+                    if holdCycle {
+                        HStack(spacing: 6) {
+                            Image(systemName: "circle.fill").font(.system(size: 8))
+                                .foregroundStyle(cycleRunning ? .green : .orange)
+                            Text(cycleRunning
+                                 ? "Cycle actif : Copiste reçoit bien les touches."
+                                 : "Cycle inactif : Copiste ne reçoit pas les touches (autorisation manquante, voir ci-dessous).")
+                                .font(.callout)
+                        }
+                    }
+                    if holdCycle && !cycleRunning {
                         Divider()
                         HStack(alignment: .top, spacing: 12) {
                             Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
-                            Text("Autorisation manquante : ajoute Copiste dans Réglages Système › Confidentialité et sécurité › Surveillance de l'entrée, puis relance Copiste. Sans elle, le maintien de ⌘V ne fait rien.")
+                            Text("Ajoute Copiste dans Réglages Système › Confidentialité et sécurité › Surveillance de l'entrée (et vérifie qu'il est aussi dans Contrôle de l'appareil). S'il y est déjà, retire-le avec −, ajoute-le de nouveau, puis relance Copiste.")
                                 .font(.callout)
                                 .fixedSize(horizontal: false, vertical: true)
                             Spacer()
@@ -540,6 +551,7 @@ struct GeneralPage: View {
         .onReceive(refresh) { _ in
             trusted = AXIsProcessTrusted()
             inputAllowed = HoldCycle.hasInputPermission
+            cycleRunning = HoldCycle.isRunning
         }
     }
 

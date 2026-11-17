@@ -12,6 +12,8 @@ final class HoldCycle {
     /// Lire les touches (⌘V maintenu) demande aussi « Surveillance de l'entrée » dans les Réglages Système :
     /// sans elle, le tap se crée mais ne reçoit aucune touche.
     static var hasInputPermission: Bool { CGPreflightListenEventAccess() }
+    /// Vrai quand le tap clavier est réellement actif (affiché dans les réglages pour le diagnostic).
+    private(set) static var isRunning = false
 
     static let delayKey = "holdCycleDelay"
     static let defaultDelay = 0.35
@@ -62,7 +64,12 @@ final class HoldCycle {
             tap: .cgSessionEventTap, place: .headInsertEventTap, options: .defaultTap,
             eventsOfInterest: CGEventMask(mask), callback: callback,
             userInfo: Unmanaged.passUnretained(self).toOpaque()
-        ) else { return false }
+        ) else {
+            log.info("holdCycle: tap clavier refusé (accessibilité=\(AXIsProcessTrusted(), privacy: .public), surveillance de l'entrée=\(Self.hasInputPermission, privacy: .public))")
+            return false
+        }
+        log.info("holdCycle: tap clavier actif")
+        Self.isRunning = true
         let source = CFMachPortCreateRunLoopSource(nil, tap, 0)
         CFRunLoopAddSource(CFRunLoopGetMain(), source, .commonModes)
         CGEvent.tapEnable(tap: tap, enable: true)
@@ -77,6 +84,7 @@ final class HoldCycle {
         if let tap { CGEvent.tapEnable(tap: tap, enable: false) }
         tap = nil
         runLoopSource = nil
+        Self.isRunning = false
     }
 
     /// Retour à l'état de repos, sans coller.
@@ -110,6 +118,7 @@ final class HoldCycle {
                 let plainCommand = flags.contains(.maskCommand)
                     && !flags.contains(.maskShift) && !flags.contains(.maskAlternate) && !flags.contains(.maskControl)
                 guard key == kV, plainCommand, !isRepeat, !history.items.isEmpty else { return pass }
+                log.info("holdCycle: ⌘V retenu, attente de \(self.holdDelay, privacy: .public) s")
                 state = .pending
                 holdTimer = Timer.scheduledTimer(withTimeInterval: holdDelay, repeats: false) { [weak self] _ in
                     self?.openPanel()
@@ -165,6 +174,7 @@ final class HoldCycle {
 
     private func openPanel() {
         guard state == .pending else { return }
+        log.info("holdCycle: panneau ouvert")
         state = .cycling
         index = 0
         panel.show(items: history.items, pinnedCount: history.pinned.count, selected: index)
