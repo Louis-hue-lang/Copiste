@@ -5,6 +5,7 @@ final class SnippetMenu: NSObject {
     private let store: SnippetStore
     private let history: ClipboardHistory
     private let openSettings: () -> Void
+    var openSearch: (() -> Void)?
     private static let historyTag = 7001
 
     init(store: SnippetStore, history: ClipboardHistory, openSettings: @escaping () -> Void) {
@@ -114,6 +115,11 @@ final class SnippetMenu: NSObject {
         }
 
         menu.addItem(.separator())
+        let search = NSMenuItem(title: "Rechercher…", action: #selector(searchClicked), keyEquivalent: "f")
+        search.keyEquivalentModifierMask = [.option, .command]
+        search.image = NSImage(systemSymbolName: "magnifyingglass", accessibilityDescription: nil)
+        search.target = self
+        menu.addItem(search)
         let settings = NSMenuItem(title: "Gérer les pré-copies…", action: #selector(settingsClicked), keyEquivalent: ",")
         settings.target = self
         menu.addItem(settings)
@@ -145,6 +151,8 @@ final class SnippetMenu: NSObject {
             Paster.paste(text, history: history)
         }
     }
+
+    @objc private func searchClicked() { openSearch?() }
 
     @objc private func settingsClicked() {
         openSettings()

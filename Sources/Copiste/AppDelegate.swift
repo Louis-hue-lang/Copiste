@@ -11,9 +11,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private lazy var notch = NotchBridge(store: store, history: history) { [weak self] in
         self?.openSettings()
     }
+    private lazy var searchPanel = SearchPanel(store: store, history: history)
     private let rightClick = RightClickTap()
     private var statusItem: NSStatusItem!
     private var hotKey: HotKey?
+    private var searchHotKey: HotKey?
     private var settingsWindow: NSWindow?
     private var permissionTimer: Timer?
 
@@ -27,10 +29,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         menu.delegate = self
         statusItem.menu = menu
 
+        snippetMenu.openSearch = { [weak self] in self?.searchPanel.toggle() }
         history.start()
 
         hotKey = HotKey(keyCode: kVK_ANSI_V, modifiers: cmdKey | optionKey, id: 1) { [weak self] in
             self?.snippetMenu.showAtMouse()
+        }
+
+        searchHotKey = HotKey(keyCode: kVK_ANSI_F, modifiers: cmdKey | optionKey, id: 2) { [weak self] in
+            self?.searchPanel.toggle()
         }
 
         rightClick.onTrigger = { [weak self] in self?.snippetMenu.showAtMouse() }
