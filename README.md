@@ -29,6 +29,7 @@
 - 🪄 **Transformations locales** : majuscules, une seule ligne, tri, lien sans suivi, couleur hex → RGB… appliquées à la dernière copie, sans IA.
 - 🎯 **Coller seulement un champ** : montant, date, e-mail, IBAN (contrôlé), téléphone ou lien repéré dans la dernière copie, collé seul (« Coller seulement… »).
 - 🔎 **Recherche instantanée** : <kbd>⌥</kbd><kbd>⌘</kbd><kbd>F</kbd> ouvre un panneau qui filtre l'historique, les épinglés et les pré-copies ; Entrée colle le résultat.
+- ⌘ **Cycle ⌘ maintenu** (option, désactivée par défaut) : maintiens ⌘V un instant, un panneau s'ouvre, V parcourt l'historique, relâche ⌘ pour coller. Un ⌘V rapide reste un collage normal.
 - 🖱️ **Menu sous la souris** : <kbd>⌥</kbd> + clic droit dans n'importe quelle application, ou <kbd>⌥</kbd><kbd>⌘</kbd><kbd>V</kbd> au clavier. Le texte choisi est collé directement.
 - 🔎 **Recherche, glisser-déposer, déplacement entre dossiers** dans une interface entièrement en français.
 - 🧩 **Extension AlyNotch** : si AlyNotch (0.8.0 ou plus) est lancé, Copiste apparaît dans le notch en deux colonnes : vos pré-copies rangées par dossier à gauche, l'historique du presse-papier à droite ; un clic copie. Facultatif, désactivable dans Réglages › Général.
@@ -66,6 +67,7 @@ Le [guide d'installation complet](../../releases/latest) (fichier `Guide d'insta
 | Transformer la dernière copie | Menu › Transformer la dernière copie |
 | Coller un seul champ de la dernière copie | Menu › Coller seulement… |
 | Rechercher dans tout | <kbd>⌥</kbd> <kbd>⌘</kbd> <kbd>F</kbd> (↑ ↓ pour choisir, Entrée pour coller, Échap pour fermer) |
+| Cycle (si activé dans Réglages › Général) | Maintenir <kbd>⌘</kbd><kbd>V</kbd>, puis <kbd>V</kbd> (suivant), <kbd>⇧</kbd><kbd>V</kbd> (précédent), <kbd>⌫</kbd> (supprimer), <kbd>Échap</kbd> (annuler), relâcher <kbd>⌘</kbd> (coller) |
 | Gérer les pré-copies | Icône de la barre des menus › Gérer les pré-copies… |
 | Gras, italique, souligné (éditeur) | <kbd>⌘</kbd><kbd>B</kbd>, <kbd>⌘</kbd><kbd>I</kbd>, <kbd>⌘</kbd><kbd>U</kbd> |
 
@@ -88,6 +90,7 @@ Seuls les outils en ligne de commande d'Apple sont nécessaires (`xcode-select -
 |---|---|
 | `Sources/Copiste/AppDelegate.swift` | Démarrage, icône de la barre des menus, raccourcis |
 | `Sources/Copiste/ClipboardHistory.swift` | Surveillance du presse-papier, épingles |
+| `Sources/Copiste/HoldCycle.swift` | Cycle ⌘ maintenu + V et son panneau |
 | `Sources/Copiste/SearchPanel.swift` | Panneau de recherche ⌥⌘F |
 | `Sources/Copiste/FieldExtractor.swift` | Détection des champs (montant, date, IBAN…) |
 | `Sources/Copiste/ClipKind.swift` | Type d'un texte copié (icône) et transformations |
@@ -105,7 +108,6 @@ Seuls les outils en ligne de commande d'Apple sont nécessaires (`xcode-select -
 
 ## Feuille de route
 
-- Cycle ⌘ maintenu + V avec relâchement pour coller (option)
 - Raccourcis personnalisables
 - Historique des images et des fichiers
 - Historique conservé entre deux lancements (en option)

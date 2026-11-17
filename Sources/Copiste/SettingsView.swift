@@ -394,6 +394,8 @@ struct GeneralPage: View {
     @State private var loginError: String?
     @State private var historyCleared = false
     @AppStorage(NotchBridge.defaultsKey) private var showInNotch = true
+    @AppStorage(HoldCycle.defaultsKey) private var holdCycle = false
+    @AppStorage(HoldCycle.delayKey) private var holdDelay = HoldCycle.defaultDelay
     private let refresh = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
 
     var body: some View {
@@ -444,6 +446,38 @@ struct GeneralPage: View {
                     }
                 }
 
+                Card("Cycle ⌘ maintenu", systemImage: "arrow.triangle.2.circlepath") {
+                    Toggle(isOn: $holdCycle) {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Parcourir l'historique en maintenant ⌘V")
+                            Text("Maintiens ⌘ et V un instant (durée réglable) : un panneau s'ouvre. Chaque appui sur V avance (⇧V recule), relâche ⌘ pour coller, Échap pour annuler, ⌫ pour supprimer. Un ⌘V rapide colle comme d'habitude, avec un très léger délai. Désactivé par défaut.")
+                                .font(.callout)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    .toggleStyle(.switch)
+                    if holdCycle {
+                        Divider()
+                        HStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text("Durée de maintien")
+                                Text("Plus longue si tu tapes lentement : le panneau s'ouvre après ce temps.")
+                                    .font(.callout)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Slider(value: $holdDelay, in: HoldCycle.delayRange, step: 0.05)
+                                .frame(width: 170)
+                            Text(String(format: "%.2f s", holdDelay))
+                                .monospacedDigit()
+                                .frame(width: 52, alignment: .trailing)
+                            Button("Par défaut") { holdDelay = HoldCycle.defaultDelay }
+                                .disabled(abs(holdDelay - HoldCycle.defaultDelay) < 0.001)
+                        }
+                    }
+                }
+
                 Card("AlyNotch", systemImage: "rectangle.topthird.inset.filled") {
                     Toggle(isOn: $showInNotch) {
                         VStack(alignment: .leading, spacing: 3) {
@@ -459,7 +493,7 @@ struct GeneralPage: View {
 
                 Card("Historique", systemImage: "clock.arrow.circlepath") {
                     HStack(alignment: .center, spacing: 12) {
-                        Text("Les 30 derniers textes copiés, gardés en mémoire uniquement et effacés à la fermeture. Les mots de passe des gestionnaires sont ignorés.")
+                        Text("Les 30 derniers textes copiés, gardés en mémoire uniquement et effacés à la fermeture (seuls les éléments épinglés sont enregistrés). Les mots de passe des gestionnaires sont ignorés.")
                             .font(.callout)
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)

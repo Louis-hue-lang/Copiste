@@ -4,6 +4,9 @@ import os
 let log = Logger(subsystem: "fr.louisclauzier.copiste", category: "app")
 
 enum Paster {
+    /// Marque les événements clavier que Copiste envoie lui-même (pour ne pas les réintercepter).
+    static let marker: Int64 = 0x4350_5354
+
     /// Place le texte dans le presse-papier puis simule ⌘V dans l'app au premier plan.
     /// Nécessite l'autorisation Accessibilité.
     /// Avec `rtf`, la mise en forme (gras, italique, souligné) est collée aussi.
@@ -23,6 +26,7 @@ enum Paster {
         // Laisse le menu se fermer et le focus revenir à l'app cible.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
             let source = CGEventSource(stateID: .combinedSessionState)
+            source?.userData = marker
             // Ignore le clavier physique pendant l'envoi (une touche ⌥ encore enfoncée ferait ⌥⌘V).
             source?.setLocalEventsFilterDuringSuppressionState(
                 [.permitLocalMouseEvents, .permitSystemDefinedEvents],

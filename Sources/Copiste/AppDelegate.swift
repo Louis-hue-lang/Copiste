@@ -12,6 +12,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         self?.openSettings()
     }
     private lazy var searchPanel = SearchPanel(store: store, history: history)
+    private lazy var holdCycle = HoldCycle(history: history)
     private let rightClick = RightClickTap()
     private var statusItem: NSStatusItem!
     private var hotKey: HotKey?
@@ -47,8 +48,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
         // Intégration AlyNotch : facultative, coupée par le réglage « Afficher dans AlyNotch ».
         notch.setEnabled(NotchBridge.isEnabled)
+        holdCycle.setEnabled(HoldCycle.isEnabled)
         NotificationCenter.default.addObserver(forName: UserDefaults.didChangeNotification, object: nil, queue: .main) { [weak self] _ in
             self?.notch.setEnabled(NotchBridge.isEnabled)
+            self?.holdCycle.setEnabled(HoldCycle.isEnabled)
         }
 
         if CommandLine.arguments.contains("--settings") { openSettings() }
