@@ -42,6 +42,8 @@
 - 🖱️ **Menu sous la souris** : <kbd>⌥</kbd> + clic droit dans n'importe quelle application, ou <kbd>⌥</kbd><kbd>⌘</kbd><kbd>V</kbd> au clavier. Le texte choisi est collé directement.
 - 🔎 **Recherche, glisser-déposer, déplacement entre dossiers** dans une interface entièrement en français.
 - 🧩 **Extension AlyNotch** : si AlyNotch (0.8.0 ou plus) est lancé, Copiste apparaît dans le notch en deux colonnes : vos pré-copies rangées par dossier à gauche, l'historique du presse-papier à droite ; un clic copie. Facultatif, désactivable dans Réglages › Général.
+- 🖼️ **Images** : les 10 dernières images copiées (captures d'écran comprises) sont gardées en vignettes dans le sous-menu « Images » et se collent d'un clic.
+- 🔐 **Historique conservé, chiffré (option)** : Réglages › Général › « Conserver l'historique entre deux lancements ». Fichier chiffré en AES-256, clé dans votre Trousseau ; désactivé par défaut.
 - 🔒 **Respect de la vie privée** : rien ne quitte votre Mac. L'historique reste en mémoire et les mots de passe des gestionnaires (1Password, Bitwarden…) sont ignorés.
 - 🪶 **Léger** : environ 1 Mo, aucune dépendance, une simple icône dans la barre des menus.
 
@@ -77,6 +79,7 @@ Le [guide d'installation complet](../../releases/latest) (fichier `Guide d'insta
 | Coller un seul champ de la dernière copie | Menu › Coller seulement… |
 | Rechercher dans tout | <kbd>⌥</kbd> <kbd>⌘</kbd> <kbd>F</kbd> (↑ ↓ pour choisir, Entrée pour coller, Échap pour fermer) |
 | Cycle (si activé dans Réglages › Général) | Maintenir <kbd>⌘</kbd><kbd>V</kbd>, puis <kbd>V</kbd> (suivant), <kbd>⇧</kbd><kbd>V</kbd> (précédent), <kbd>⌫</kbd> (supprimer), <kbd>Échap</kbd> (annuler), relâcher <kbd>⌘</kbd> (coller) |
+| Coller une image copiée | Menu › Images › clic (⌘ + clic pour la supprimer) |
 | Gérer les pré-copies | Icône de la barre des menus › Gérer les pré-copies… |
 | Gras, italique, souligné (éditeur) | <kbd>⌘</kbd><kbd>B</kbd>, <kbd>⌘</kbd><kbd>I</kbd>, <kbd>⌘</kbd><kbd>U</kbd> |
 
@@ -103,6 +106,7 @@ Seuls les outils en ligne de commande d'Apple sont nécessaires (`xcode-select -
 | `Sources/Copiste/HoldCycle.swift` | Cycle ⌘ maintenu + V et son panneau |
 | `Sources/Copiste/SearchPanel.swift` | Panneau de recherche ⌥⌘F |
 | `Sources/Copiste/FieldExtractor.swift` | Détection des champs (montant, date, IBAN…) |
+| `Sources/Copiste/HistoryVault.swift` | Chiffrement AES-GCM de l'historique, clé dans le Trousseau |
 | `Sources/Copiste/ClipKind.swift` | Type d'un texte copié (icône) et transformations |
 | `Sources/Copiste/SnippetStore.swift` | Dossiers et pré-copies, enregistrés en JSON |
 | `Sources/Copiste/RichText.swift` | Éditeur gras / italique / souligné, export RTF et HTML |
@@ -119,8 +123,7 @@ Seuls les outils en ligne de commande d'Apple sont nécessaires (`xcode-select -
 ## Feuille de route
 
 - Raccourcis personnalisables
-- Historique des images et des fichiers
-- Historique conservé entre deux lancements (en option)
+- Historique des fichiers copiés, aperçu des images
 - Import et export des pré-copies
 - Notarisation Apple
 

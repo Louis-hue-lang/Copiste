@@ -58,7 +58,23 @@ final class SnippetMenu: NSObject {
             }
         }
 
-        if !history.items.isEmpty {
+        if !history.images.isEmpty {
+            let imagesItem = NSMenuItem(title: "Images (\(history.images.count))", action: nil, keyEquivalent: "")
+            imagesItem.image = NSImage(systemSymbolName: "photo.on.rectangle", accessibilityDescription: nil)
+            let sub = NSMenu()
+            for (i, clip) in history.images.enumerated() {
+                let size = clip.pixelSize.map { " — \(Int($0.width))×\(Int($0.height))" } ?? ""
+                let entry = NSMenuItem(title: "Image \(i + 1)\(size)", action: #selector(pick(_:)), keyEquivalent: "")
+                entry.target = self
+                entry.representedObject = clip
+                entry.image = Self.thumbnail(clip.image)
+                sub.addItem(entry)
+            }
+            imagesItem.submenu = sub
+            menu.addItem(imagesItem)
+        }
+
+        if !history.items.isEmpty || !history.images.isEmpty {
             if let latest = history.recent.first ?? history.pinned.first {
                 let transform = NSMenuItem(title: "Transformer la dernière copie", action: nil, keyEquivalent: "")
                 transform.image = NSImage(systemSymbolName: "wand.and.stars", accessibilityDescription: nil)
@@ -136,6 +152,11 @@ final class SnippetMenu: NSObject {
     }
 
     @objc private func pick(_ sender: NSMenuItem) {
+        if let clip = sender.representedObject as? ClipImage {
+            if NSEvent.modifierFlags.contains(.command) { history.removeImage(clip.id) }
+            else { Paster.pasteImage(clip.png, history: history) }
+            return
+        }
         // Un élément de l'historique accepte des raccourcis au clic : ⇧ épingle / désépingle, ⌘ supprime.
         if let text = sender.representedObject as? String, sender.tag == Self.historyTag {
             let flags = NSEvent.modifierFlags
@@ -175,6 +196,18 @@ final class SnippetMenu: NSObject {
         let item = NSMenuItem(title: title, action: nil, keyEquivalent: "")
         item.isEnabled = false
         return item
+    }
+
+    /// Vignette de 40 pt de haut maximum pour le menu.
+    static func thumbnail(_ image: NSImage?) -> NSImage? {
+        guard let image, image.size.width > 0, image.size.height > 0 else { return nil }
+        let scale = min(56 / image.size.width, 40 / image.size.height, 1)
+        let size = NSSize(width: max(1, image.size.width * scale), height: max(1, image.size.height * scale))
+        let thumb = NSImage(size: size)
+        thumb.lockFocus()
+        image.draw(in: NSRect(origin: .zero, size: size))
+        thumb.unlockFocus()
+        return thumb
     }
 
     static func label(_ text: String) -> String {

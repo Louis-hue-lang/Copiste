@@ -394,6 +394,7 @@ struct GeneralPage: View {
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
     @State private var loginError: String?
     @State private var historyCleared = false
+    @State private var persist = ClipboardHistory.persistEnabled
     @AppStorage(NotchBridge.defaultsKey) private var showInNotch = true
     @AppStorage(HoldCycle.defaultsKey) private var holdCycle = false
     @AppStorage(HoldCycle.delayKey) private var holdDelay = HoldCycle.defaultDelay
@@ -508,7 +509,7 @@ struct GeneralPage: View {
 
                 Card("Historique", systemImage: "clock.arrow.circlepath") {
                     HStack(alignment: .center, spacing: 12) {
-                        Text("Les 30 derniers textes copiés, gardés en mémoire uniquement et effacés à la fermeture (seuls les éléments épinglés sont enregistrés). Les mots de passe des gestionnaires sont ignorés.")
+                        Text("Les 30 derniers textes et les 10 dernières images copiés, gardés en mémoire et effacés à la fermeture (seuls les éléments épinglés sont enregistrés). Les mots de passe des gestionnaires sont ignorés.")
                             .font(.callout)
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
@@ -519,6 +520,17 @@ struct GeneralPage: View {
                         }
                         .disabled(historyCleared)
                     }
+                    Divider()
+                    Toggle(isOn: Binding(get: { persist }, set: { persist = $0; history.setPersistence($0) })) {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Conserver l'historique entre deux lancements")
+                            Text("Désactivé par défaut. L'historique est enregistré chiffré (AES-256) ; la clé est gardée dans ton Trousseau et ne quitte pas ce Mac. En désactivant, le fichier et la clé sont supprimés.")
+                                .font(.callout)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    .toggleStyle(.switch)
                 }
             }
             .padding(32)

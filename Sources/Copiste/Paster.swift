@@ -12,6 +12,19 @@ enum Paster {
     /// Avec `rtf`, la mise en forme (gras, italique, souligné) est collée aussi.
     static func paste(_ text: String, rtf: Data? = nil, history: ClipboardHistory) {
         RichText.write(text: text, rtf: rtf)
+        send(history: history)
+    }
+
+    /// Place l'image dans le presse-papier puis la colle.
+    static func pasteImage(_ png: Data, history: ClipboardHistory) {
+        let pb = NSPasteboard.general
+        pb.clearContents()
+        pb.setData(png, forType: .png)
+        if let tiff = NSImage(data: png)?.tiffRepresentation { pb.setData(tiff, forType: .tiff) }
+        send(history: history)
+    }
+
+    private static func send(history: ClipboardHistory) {
         history.ignoreCurrent()
 
         let trusted = AXIsProcessTrusted()
