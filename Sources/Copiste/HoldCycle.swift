@@ -205,7 +205,7 @@ final class HoldCycle {
 }
 
 /// Petit panneau flottant qui ne prend pas le focus : l'app visée garde la main.
-private final class CyclePanel {
+final class CyclePanel {
     private var panel: NSPanel?
     private let stack = NSStackView()
     private let maxRows = 9
@@ -233,6 +233,17 @@ private final class CyclePanel {
     }
 
     func hide() { panel?.orderOut(nil) }
+
+    /// Export de visuel (--snapshot).
+    func snapshot(items: [String], pinnedCount: Int, selected: Int) -> NSImage? {
+        show(items: items, pinnedCount: pinnedCount, selected: selected)
+        panel?.orderOut(nil)
+        guard let view = panel?.contentView else { return nil }
+        view.layoutSubtreeIfNeeded()
+        view.frame = NSRect(origin: .zero, size: panel!.frame.size)
+        view.layoutSubtreeIfNeeded()
+        return Snapshot.image(of: view)
+    }
 
     private func position(_ panel: NSPanel) {
         let mouse = NSEvent.mouseLocation

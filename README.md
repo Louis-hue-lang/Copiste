@@ -20,6 +20,15 @@
 
 <p align="center"><img src="docs/reglages.png" width="820" alt="Fenêtre de gestion des pré-copies"></p>
 
+<table>
+<tr>
+<td align="center" width="50%"><img src="docs/recherche.png" width="400" alt="Panneau de recherche ⌥⌘F"><br><b>Recherche instantanée</b> <kbd>⌥</kbd><kbd>⌘</kbd><kbd>F</kbd><br>historique, épinglés et pré-copies</td>
+<td align="center" width="50%"><img src="docs/cycle.png" width="360" alt="Cycle ⌘ maintenu + V"><br><b>Cycle ⌘ maintenu</b> (option)<br>V avance, relâcher ⌘ colle</td>
+</tr>
+</table>
+
+<sub>Visuels générés avec des données fictives par <code>Copiste --snapshot &lt;dossier&gt;</code>.</sub>
+
 ## Fonctionnalités
 
 - 🕘 **Historique du presse-papier** : les 30 derniers textes copiés, collés d'un clic ou avec les touches <kbd>1</kbd> à <kbd>9</kbd>.
@@ -90,6 +99,7 @@ Seuls les outils en ligne de commande d'Apple sont nécessaires (`xcode-select -
 |---|---|
 | `Sources/Copiste/AppDelegate.swift` | Démarrage, icône de la barre des menus, raccourcis |
 | `Sources/Copiste/ClipboardHistory.swift` | Surveillance du presse-papier, épingles |
+| `Sources/Copiste/Snapshot.swift` | Export des visuels du README (données fictives) |
 | `Sources/Copiste/HoldCycle.swift` | Cycle ⌘ maintenu + V et son panneau |
 | `Sources/Copiste/SearchPanel.swift` | Panneau de recherche ⌥⌘F |
 | `Sources/Copiste/FieldExtractor.swift` | Détection des champs (montant, date, IBAN…) |

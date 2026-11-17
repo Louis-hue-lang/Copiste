@@ -24,8 +24,9 @@ final class SnippetStore: ObservableObject {
 
     private let fileURL: URL
 
-    init() {
-        let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+    /// `directory` : dossier du fichier JSON (par défaut ~/Library/Application Support/Copiste).
+    init(directory: URL? = nil) {
+        let dir = directory ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("Copiste", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         fileURL = dir.appendingPathComponent("snippets.json")

@@ -34,6 +34,18 @@ final class SearchPanel: NSObject, NSSearchFieldDelegate, NSTableViewDataSource,
         if panel?.isVisible == true { close() } else { show() }
     }
 
+    // MARK: - Export de visuel (--snapshot)
+
+    func snapshot(query: String) -> NSImage? {
+        all = buildEntries()
+        if panel == nil { buildPanel() }
+        field.stringValue = query
+        refilter()
+        guard let view = panel?.contentView else { return nil }
+        view.frame = NSRect(x: 0, y: 0, width: 520, height: 352)
+        return Snapshot.image(of: view)
+    }
+
     // MARK: - Affichage
 
     private func show() {
