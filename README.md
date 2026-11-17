@@ -25,6 +25,8 @@
 - 🕘 **Historique du presse-papier** : les 30 derniers textes copiés, collés d'un clic ou avec les touches <kbd>1</kbd> à <kbd>9</kbd>.
 - 📁 **Pré-copies rangées en dossiers** : signatures, réponses types, adresses… créées une fois, réutilisées partout.
 - ✍️ **Mise en forme** : gras, italique et souligné, conservés au collage (Mail, Pages, Word, Notes, navigateurs…).
+- 📌 **Épingles** : épinglez une copie pour qu'elle reste en tête, même après redémarrage (seuls les éléments épinglés sont enregistrés sur disque).
+- 🪄 **Transformations locales** : majuscules, une seule ligne, tri, lien sans suivi, couleur hex → RGB… appliquées à la dernière copie, sans IA.
 - 🖱️ **Menu sous la souris** : <kbd>⌥</kbd> + clic droit dans n'importe quelle application, ou <kbd>⌥</kbd><kbd>⌘</kbd><kbd>V</kbd> au clavier. Le texte choisi est collé directement.
 - 🔎 **Recherche, glisser-déposer, déplacement entre dossiers** dans une interface entièrement en français.
 - 🧩 **Extension AlyNotch** : si AlyNotch (0.8.0 ou plus) est lancé, Copiste apparaît dans le notch en deux colonnes : vos pré-copies rangées par dossier à gauche, l'historique du presse-papier à droite ; un clic copie. Facultatif, désactivable dans Réglages › Général.
@@ -57,6 +59,9 @@ Le [guide d'installation complet](../../releases/latest) (fichier `Guide d'insta
 | Ouvrir le menu sous la souris | <kbd>⌥ option</kbd> + clic droit |
 | Ouvrir le menu au clavier | <kbd>⌥</kbd> <kbd>⌘</kbd> <kbd>V</kbd> |
 | Coller l'un des 9 derniers éléments (menu ouvert) | <kbd>1</kbd> … <kbd>9</kbd> |
+| Épingler / désépingler un élément de l'historique | <kbd>⇧</kbd> + clic dans le menu |
+| Supprimer un élément de l'historique | <kbd>⌘</kbd> + clic dans le menu |
+| Transformer la dernière copie | Menu › Transformer la dernière copie |
 | Gérer les pré-copies | Icône de la barre des menus › Gérer les pré-copies… |
 | Gras, italique, souligné (éditeur) | <kbd>⌘</kbd><kbd>B</kbd>, <kbd>⌘</kbd><kbd>I</kbd>, <kbd>⌘</kbd><kbd>U</kbd> |
 
@@ -78,7 +83,8 @@ Seuls les outils en ligne de commande d'Apple sont nécessaires (`xcode-select -
 | Fichier | Rôle |
 |---|---|
 | `Sources/Copiste/AppDelegate.swift` | Démarrage, icône de la barre des menus, raccourcis |
-| `Sources/Copiste/ClipboardHistory.swift` | Surveillance du presse-papier |
+| `Sources/Copiste/ClipboardHistory.swift` | Surveillance du presse-papier, épingles |
+| `Sources/Copiste/ClipKind.swift` | Type d'un texte copié (icône) et transformations |
 | `Sources/Copiste/SnippetStore.swift` | Dossiers et pré-copies, enregistrés en JSON |
 | `Sources/Copiste/RichText.swift` | Éditeur gras / italique / souligné, export RTF et HTML |
 | `Sources/Copiste/SnippetMenu.swift` | Construction du menu et collage |
@@ -93,6 +99,9 @@ Seuls les outils en ligne de commande d'Apple sont nécessaires (`xcode-select -
 
 ## Feuille de route
 
+- Recherche dans l'historique
+- Cycle ⌘ maintenu + V avec relâchement pour coller (option)
+- Collage d'un seul champ détecté (montant, date, e-mail…)
 - Raccourcis personnalisables
 - Historique des images et des fichiers
 - Historique conservé entre deux lancements (en option)
