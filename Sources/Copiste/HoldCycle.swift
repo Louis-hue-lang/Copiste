@@ -9,6 +9,9 @@ import AppKit
 final class HoldCycle {
     static let defaultsKey = "holdCycleEnabled"
     static var isEnabled: Bool { UserDefaults.standard.bool(forKey: defaultsKey) }
+    /// Lire les touches (⌘V maintenu) demande aussi « Surveillance de l'entrée » dans les Réglages Système :
+    /// sans elle, le tap se crée mais ne reçoit aucune touche.
+    static var hasInputPermission: Bool { CGPreflightListenEventAccess() }
 
     static let delayKey = "holdCycleDelay"
     static let defaultDelay = 0.35
@@ -38,6 +41,7 @@ final class HoldCycle {
         retryTimer?.invalidate()
         retryTimer = nil
         if !on { stop(); return }
+        if !Self.hasInputPermission { CGRequestListenEventAccess() }
         if start() { return }
         retryTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] timer in
             guard let self, AXIsProcessTrusted(), self.start() else { return }

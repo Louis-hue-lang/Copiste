@@ -390,6 +390,7 @@ struct SearchField: View {
 struct GeneralPage: View {
     let history: ClipboardHistory
     @State private var trusted = AXIsProcessTrusted()
+    @State private var inputAllowed = HoldCycle.hasInputPermission
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
     @State private var loginError: String?
     @State private var historyCleared = false
@@ -457,6 +458,20 @@ struct GeneralPage: View {
                         }
                     }
                     .toggleStyle(.switch)
+                    if holdCycle && !inputAllowed {
+                        Divider()
+                        HStack(alignment: .top, spacing: 12) {
+                            Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.orange)
+                            Text("Autorisation manquante : ajoute Copiste dans Réglages Système › Confidentialité et sécurité › Surveillance de l'entrée, puis relance Copiste. Sans elle, le maintien de ⌘V ne fait rien.")
+                                .font(.callout)
+                                .fixedSize(horizontal: false, vertical: true)
+                            Spacer()
+                            Button("Ouvrir les Réglages") {
+                                NSWorkspace.shared.open(URL(string:
+                                    "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent")!)
+                            }
+                        }
+                    }
                     if holdCycle {
                         Divider()
                         HStack(spacing: 12) {
@@ -510,7 +525,10 @@ struct GeneralPage: View {
             .frame(maxWidth: 720, alignment: .leading)
             .frame(maxWidth: .infinity)
         }
-        .onReceive(refresh) { _ in trusted = AXIsProcessTrusted() }
+        .onReceive(refresh) { _ in
+            trusted = AXIsProcessTrusted()
+            inputAllowed = HoldCycle.hasInputPermission
+        }
     }
 
     private func setLaunchAtLogin(_ enabled: Bool) {
